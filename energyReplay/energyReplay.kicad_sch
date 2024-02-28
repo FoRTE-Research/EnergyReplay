@@ -1,0 +1,54 @@
+(kicad_sch (version 20230121) (generator eeschema)
+
+  (uuid 120e0ed8-49d6-40b5-b6ee-d112184ed278)
+
+  (paper "A4")
+
+  (title_block
+    (title "Energy Replay Board")
+    (date "2024-01-22")
+    (rev "0")
+  )
+
+  (lib_symbols
+  )
+
+
+  (sheet (at 97.79 76.2) (size 29.21 25.4) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0000))
+    (uuid 9b2046c3-b0fd-473e-822b-ff59babaf935)
+    (property "Sheetname" "Control" (at 97.79 75.4884 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "Control.kicad_sch" (at 97.79 102.1846 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "energyReplay"
+        (path "/120e0ed8-49d6-40b5-b6ee-d112184ed278" (page "2"))
+      )
+    )
+  )
+
+  (sheet (at 152.4 76.2) (size 29.21 25.4) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0000))
+    (uuid ccca44b3-6942-4536-b000-0f636931c471)
+    (property "Sheetname" "Output" (at 152.4 75.4884 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "output.kicad_sch" (at 152.4 102.1846 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "energyReplay"
+        (path "/120e0ed8-49d6-40b5-b6ee-d112184ed278" (page "3"))
+      )
+    )
+  )
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)

@@ -1,0 +1,20 @@
+(version 1)
+(rule "class 1:0"
+  (condition "A.NetClass == 'Ground' && B.NetClass == 'Default'")
+  (constraint clearance (min 0.1524mm)))
+
+(rule "class 1:1"
+  (condition "A.NetClass == 'Ground' && B.NetClass == 'Ground'")
+  (constraint clearance (min 0.1524mm)))
+
+(rule "class 2:0"
+  (condition "A.NetClass == 'Power' && B.NetClass == 'Default'")
+  (constraint clearance (min 0.1524mm)))
+
+(rule "class 2:1"
+  (condition "A.NetClass == 'Power' && B.NetClass == 'Ground'")
+  (constraint clearance (min 0.1524mm)))
+
+(rule "class 2:2"
+  (condition "A.NetClass == 'Power' && B.NetClass == 'Power'")
+  (constraint clearance (min 0.1524mm)))
