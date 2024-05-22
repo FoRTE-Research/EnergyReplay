@@ -14,7 +14,7 @@ const uint8_t txZero[3] = {0b01100000, 0x0, 0x0};
 
 
 void setDACVoltage(uint16_t v){
-    v &= 0x0FFF;                        // DAC is 12 bytes
+    v &= 0x0FFF;                        // DAC is 12 bits
     TxData[0] = v >> 8;
     TxData[1] = v & 0xFF;
     PTxData = (uint8_t*) TxData;        // TX array start address

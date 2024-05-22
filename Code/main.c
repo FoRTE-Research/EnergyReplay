@@ -6,6 +6,11 @@
 
 #include "dac.h"
 
+#define SENSE_RESISTOR_VAL 0.5f
+#define LOAD_VOLTAGE_LIMIT 3.6f
+#define LOAD_ADC_REF 3.3f
+#define SHUNT_ADC_REF 2.5f
+
 // LFMODCLK which sources ACLK is about 37.42 kHz
 // Timestep in milliseconds
 #define TIMER_PERIOD (TIMESTEP * 37420 / 1000)
@@ -102,21 +107,79 @@ int main(void)
 //    P2SEL0 |= BIT0;
 //    P2SEL1 |= BIT0;
 
-    setDACVoltage(1024);
+    setDACVoltage(0);
+
+    uint16_t dacLevel = 0;
+    uint8_t clampDac = 0;
+    volatile float actualPower, desiredPower, loadVoltage, shuntVoltage;
 
     while(1){
-        __delay_cycles(5000);
         ADC12CTL0 |= ADC12ENC | ADC12SC;    // Begin ADC conversion
-        if(s1Pressed()){
-            greenOn();
-        }else{
-            greenOff();
-        }
-        if(s2Pressed()){
+
+        // Op amps may produce high voltages at the ADC pins which could damage the chip
+        // None of the ADC channels should come near saturating
+        // If they have, something wrong - don't increase DAC voltage any more
+        if(adcDiffAmp > 4050 || adcLoad > 4050){
+            clampDac = 1;
             redOn();
         }else{
-            redOff();
+            clampDac = 0;
         }
+
+        // Do we have more trace to process?
+        // If not, turn off DAC, set red LED, and sit
+        if(sizeof(float) * powerIndex >= sizeof(powerArray)){
+            setDACVoltage(0);
+            __delay_cycles(25000);
+            __bic_SR_register(GIE);
+            greenOff();
+            while(1);
+        }
+
+        // Calculate actual voltages from ADC readings
+        loadVoltage = ((float) adcLoad / 4095) * LOAD_ADC_REF;          // Load channel directly measures load
+        __no_operation();
+        shuntVoltage = ((float) adcDiffAmp / 4095) * SHUNT_ADC_REF;     // Shunt channel sees shunt voltage through
+        __no_operation();
+        shuntVoltage /= 150;                                    // 150x amplifier
+
+        __no_operation();
+
+        // If load voltage is too high, clamp DAC
+        if(loadVoltage > LOAD_VOLTAGE_LIMIT){
+            clampDac = 1;
+            redOn();
+        }
+
+//        actualPower = (shuntVoltage / SENSE_RESISTOR_VAL) * loadVoltage;
+        // Let's get actual power into normal terms and then see what we can do about precision
+//        actualPower = ((((adcDiffAmp / 4095) * SHUNT_ADC_REF) / 150) / SENSE_RESISTOR_VAL) * loadVoltage;
+        __no_operation();
+        actualPower = ((float) adcDiffAmp * SHUNT_ADC_REF * loadVoltage) / ((float) 4095 * (float) 150 * SENSE_RESISTOR_VAL);
+        __no_operation();
+        desiredPower = POWER_COEFFICIENT * powerArray[powerIndex];
+        if(actualPower < desiredPower && dacLevel < 4095 && !clampDac){
+            redOff();
+            setDACVoltage(dacLevel++);
+        }else if(actualPower > desiredPower && dacLevel > 0){
+            redOff();
+            setDACVoltage(dacLevel--);
+        }else if(dacLevel == 0 || dacLevel == 4095){
+            redOn();
+        }
+
+        // Decide whether to increase or decrease DAC output
+
+//        if(s1Pressed()){
+//            greenOn();
+//        }else{
+//            greenOff();
+//        }
+//        if(s2Pressed()){
+//            redOn();
+//        }else{
+//            redOff();
+//        }
     }
 }
 

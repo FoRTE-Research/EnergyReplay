@@ -3,10 +3,42 @@
 #ifndef DAC_H_
 #define DAC_H_
 
+// TIMESTEP define is how long in milliseconds the power output stays at each point in the array
+// POWER_COEFFICIENT is a coefficient for converting the stored value to watts
+
+//#define POWER_SOLAR
+//#define POWER_RF
+#define POWER_TEST
+
+#ifdef POWER_RF
+#define TIMESTEP 20                // Milliseconds
+#define POWER_COEFFICIENT 1e-3
+#elif defined(POWER_SOLAR)
+#define TIMESTEP 1000
+#define POWER_COEFFICIENT 1e-6
+#elif defined(POWER_TEST)
+#define TIMESTEP 1000
+#define POWER_COEFFICIENT 1e-3
+#endif
+
 #define SLAVE_ADDRESS 0b1100000
 
 void setDACVoltage(uint16_t v);
 
 void zeroDACEEPROM();
+
+#define NUMBER 0.5
+
+const float powerArray[] = {
+NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER,
+1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER,
+NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER,
+1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER,
+NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER,
+1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER,
+NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER,
+1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER, 1.25 * NUMBER,
+NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER};
+
 
 #endif
