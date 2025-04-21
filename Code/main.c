@@ -45,8 +45,9 @@ void boardInit(){
     PM5CTL0 &= ~LOCKLPM5;       // Clear GPIO high-z
 
     // ----- Init pins -----
-    P3OUT &= ~(BIT3 | BIT4);    // Clear LED pins for init
-    P3DIR |= (BIT3 | BIT4);     // LED pins to output
+    P3OUT &= ~(BIT3 | BIT4);        // Clear LED pins for init
+    P3OUT |= BIT0 | BIT1 | BIT2;    // These are active low
+    P3DIR |= (BIT0 | BIT1 | BIT2 | BIT3 | BIT4);     // LED pins to output
     P3DIR &= ~(BIT5 | BIT6);    // Button pins to input with pull up resistors
     P3REN |= (BIT5 | BIT6);
     P3OUT |= (BIT5 | BIT6);
@@ -98,9 +99,23 @@ void boardInit(){
     __bis_SR_register(GIE);
 }
 
+volatile float actualPower, desiredPower, loadVoltage, shuntVoltage;
+
 int main(void)
 {
     boardInit();
+
+    __delay_cycles(100000);
+
+//    while(1){
+////        P3OUT ^= BIT3;
+////        P3OUT ^= (BIT0 | BIT1 | BIT2);
+//        __delay_cycles(5000000);
+//        setDACVoltage(2000);
+////        P3OUT ^= BIT4;
+//        __delay_cycles(5000000);
+//        setDACVoltage(1000);
+//    }
 
     // Output ACLK on P2.0 for trim
 //    P2DIR |= BIT0;
@@ -109,9 +124,10 @@ int main(void)
 
     setDACVoltage(0);
 
+    __delay_cycles(100000);
+
     uint16_t dacLevel = 0;
     uint8_t clampDac = 0;
-    volatile float actualPower, desiredPower, loadVoltage, shuntVoltage;
 
     while(1){
         ADC12CTL0 |= ADC12ENC | ADC12SC;    // Begin ADC conversion
@@ -137,11 +153,12 @@ int main(void)
         }
 
         // Calculate actual voltages from ADC readings
-        loadVoltage = ((float) adcLoad / 4095) * LOAD_ADC_REF;          // Load channel directly measures load
+        loadVoltage = ((float) adcLoad / 4095) * LOAD_ADC_REF;          // V1.2: load channel measures load through
+        loadVoltage *= 2;                                               // 0.5x voltage divider
         __no_operation();
         shuntVoltage = ((float) adcDiffAmp / 4095) * SHUNT_ADC_REF;     // Shunt channel sees shunt voltage through
-        __no_operation();
-        shuntVoltage /= 150;                                    // 150x amplifier
+        __no_operation();                                               // through 150x amplifier
+        shuntVoltage /= 150;
 
         __no_operation();
 
@@ -167,6 +184,8 @@ int main(void)
         }else if(dacLevel == 0 || dacLevel == 4095){
             redOn();
         }
+
+        __no_operation(); // For debugger
 
         // Decide whether to increase or decrease DAC output
 

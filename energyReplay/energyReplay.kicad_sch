@@ -6,8 +6,8 @@
 
   (title_block
     (title "Energy Replay Board")
-    (date "2024-08-16")
-    (rev "1")
+    (date "2025-04-21")
+    (rev "2")
   )
 
   (lib_symbols
