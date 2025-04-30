@@ -20,11 +20,8 @@ void setDACVoltage(uint16_t v){
     PTxData = (uint8_t*) TxData;        // TX array start address
     TXByteCtr = sizeof(TxData);         // Load TX byte counter
 
-//    UCB1CTLW0 |= UCTR | UCTXSTT;         // Send I2C start
-//    while (UCB1CTLW0 & UCTXSTP);         // Ensure stop gets sent
     while (UCB1CTLW0 & UCTXSTP);         // Ensure stop gets sent
     UCB1CTLW0 |= UCTR | UCTXSTT;         // Send I2C start
-//    __bis_SR_register(LPM0_bits);
 }
 
 void zeroDACEEPROM(){
@@ -34,38 +31,6 @@ void zeroDACEEPROM(){
     UCB0CTL1 |= UCTR | UCTXSTT;
     while (UCB1CTL1 & UCTXSTP);
 }
-
-//#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
-//#pragma vector = USCI_B1_VECTOR
-//__interrupt void USCI_B1_ISR(void)
-//#elif defined(__GNUC__)
-//void __attribute__ ((interrupt(USCI_B1_VECTOR))) USCI_B1_ISR (void)
-//#else
-//#error Compiler not supported!
-//#endif
-//{
-//  switch(__even_in_range(UCB1IV,12))
-//  {
-//  case  0: break;                           // Vector  0: No interrupts
-//  case  2: break;                           // Vector  2: ALIFG
-//  case  4: break;                           // Vector  4: NACKIFG
-//  case  6: break;                           // Vector  6: STTIFG
-//  case  8: break;                           // Vector  8: STPIFG
-//  case 10: break;                           // Vector 10: RXIFG
-//  case 12:                                  // Vector 12: TXIFG
-//      if (TXByteCtr)                        // Check TX byte counter
-//      {
-//        UCB1TXBUF = *PTxData++;             // Load TX buffer
-//        TXByteCtr--;                        // Decrement TX byte counter
-//      }
-//      else
-//      {
-//        UCB1CTL1 |= UCTXSTP;                // I2C stop condition
-//        UCB1IFG &= ~UCTXIFG;                // Clear USCI_B0 TX int flag
-//      }
-//  default: break;
-//  }
-//}
 
 #if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
 #pragma vector = EUSCI_B1_VECTOR
@@ -102,7 +67,6 @@ void __attribute__ ((interrupt(EUSCI_B1_VECTOR))) USCI_B1_ISR (void)
             {
                 UCB1CTLW0 |= UCTXSTP;       // I2C stop condition
                 UCB1IFG &= ~UCTXIFG;        // Clear USCI_B1 TX int flag
-//                __bic_SR_register_on_exit(LPM0_bits); // Exit LPM0
             }
             break;
         case USCI_I2C_UCBCNTIFG: break;     // Vector 26: BCNTIFG

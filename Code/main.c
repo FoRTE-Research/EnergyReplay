@@ -1,4 +1,4 @@
-// Code for MSP430FR5994 controlling energy replay board V1.0
+// Code for MSP430FR5994 controlling energy replay board V1.2
 
 #include <msp430.h> 
 #include <stdint.h>
