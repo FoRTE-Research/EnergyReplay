@@ -16,6 +16,8 @@ avoid damaging the hardware).
 
 ## Hardware
 
+Schematic and PCB designs are generated in KiCad version 9.
+
 The central microcontroller is an MSP430FR5994, which drives an MCP4725 12-bit DAC. Both the MSP430 and
 DAC operate at 3.3V; the output of the DAC is fed into an amplifier to increase its dynamic range to 5V.
 Current flows across a 0.5 ohm shunt resistor through an optional diode and into the load. Load current
@@ -47,5 +49,7 @@ the load should be connected on the OUT pin of J7.
 close this jumper.
 
 ## Software
+
+Code is generated as a Code Composer Studio version 11 project.
 
 TODO
