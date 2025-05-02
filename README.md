@@ -4,7 +4,9 @@ This is a hardware system for replaying arbitrary energy harvesting traces to dr
 on batteryless systems. It does so by measuring the voltage at the load and the current across a shunt
 resistor to determine instantaneous power input into the load and comparing this actual power input to
 a desired time-varying setpoint; if the actual power is below (above) the setpoint, it increases
-(decreases) supply voltage produced by a DAC to approach the setpoint.
+(decreases) supply voltage produced by a DAC to approach the setpoint. Since this is all done in
+software, you are free to implement whatever arbitrary functions may affect the power in your imagined
+system - IV curves for a solar panel, voltage-dependent efficiencies for a converter/regulator, etc.
 
 #### Project Status
 
