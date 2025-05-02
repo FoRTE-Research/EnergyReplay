@@ -16,6 +16,8 @@ voltage. Because V1.1 measures load voltage directly, it cannot produce a load v
 ~3.3V (software will stop voltage from increasing further if load voltage approaches this point to
 avoid damaging the hardware).
 
+An assembled and validated PCB for V1.1 is available in the lab.
+
 ## Hardware
 
 Schematic and PCB designs are generated in KiCad version 9.
