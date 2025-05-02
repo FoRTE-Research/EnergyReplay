@@ -33,7 +33,7 @@ LEDs and switches are available for basic debugging and interactive use.
 **J1:** Debug header for programming the MSP430FR5994.
 
 **J2:** Power select jumper for replay system. The center pin is connected to the system supply voltage;
-it draw power either from the debug header or from the 3V3 pin on J5.
+it can draw power either from the debug header or from the 3V3 pin on J5.
 
 **J3/J4:** Jumpers to connect and disconnect the green and red LEDs.
 
@@ -66,4 +66,4 @@ ADC, timer, and software control are all decoupled - increasing software executi
 doing the actual power calculation in hardware using some clever op-amp circuits) should only have
 the effect of reducing the response time of the control loop and not mess with the timing of the
 power trace. If you do significantly increase the software execution speed, you should double check
-that the ADC measurements are blocking so that it doesn't overshoot based on stale ADC measurements.
+that the ADC measurements are blocking so that it doesn't overshoot based on stale power readings.
