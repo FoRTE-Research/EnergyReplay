@@ -3,8 +3,8 @@
 This is a hardware system for replaying arbitrary energy harvesting traces to drive experimentation
 on batteryless systems. It does so by measuring the voltage at the load and the current across a shunt
 resistor to determine instantaneous power input into the load and comparing this actual power input to
-a desired setpoint; if the actual power is below (above) the setpoint, it increases (decreases) supply
-voltage produced by a DAC to approach the setpoint.
+a desired time-varying setpoint; if the actual power is below (above) the setpoint, it increases
+(decreases) supply voltage produced by a DAC to approach the setpoint.
 
 #### Project Status
 
@@ -52,4 +52,18 @@ close this jumper.
 
 Code is generated as a Code Composer Studio version 11 project.
 
-TODO
+The energy trace to replay is defined in the [dac.h](Code/dac.h) file as a `const float powerArray[]`
+containing the setpoints and a `#define TIMESTEP` macro to set the time (in milliseconds) that power
+should stay at each setpoint. This timestep is used to calculate a period value for a hardware timer
+that tracks the time spent at each setpoint; when the timer rolls over, the setpoint increments.
+
+The main application loop reads samples from the shunt and load ADC pins, converts those readings to
+an actual power measurement, and compares them to the desired setpoint. The output voltage is
+incremented/decremented by 1 on each iteration of the main loop; this is basically a PID controller
+with K<sub>P</sub> = 1 and K<sub>I</sub> = K<sub>D</sub> = 0. Improving the design of this control
+loop is one avenue for improvement in future iterations, although it currently works "well enough".
+ADC, timer, and software control are all decoupled - increasing software execution speed (e.g., by
+doing the actual power calculation in hardware using some clever op-amp circuits) should only have
+the effect of reducing the response time of the control loop and not mess with the timing of the
+power trace. If you do significantly increase the software execution speed, you should double check
+that the ADC measurements are blocking so that it doesn't overshoot based on stale ADC measurements.
